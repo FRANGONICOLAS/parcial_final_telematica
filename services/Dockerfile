@@ -1,16 +1,23 @@
-# Start from a different base image
 FROM ubuntu:latest
 
-# Install Apache, mod_wsgi, and OpenSSL
-RUN apt-get update && apt-get install -y apache2 libapache2-mod-wsgi-py3 openssl
+# Evita interacción al instalar paquetes
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Enable mod_wsgi
-RUN a2enmod wsgi
+# Instalar dependencias
+RUN apt-get update && apt-get install -y \
+    apache2 \
+    libapache2-mod-wsgi-py3 \
+    python3 \
+    python3-pip \
+    openssl
 
-# Enable ssl
-RUN a2enmod ssl
+# Habilitar módulos
+RUN a2enmod wsgi && a2enmod ssl
 
-# Generate self-signed SSL certificates
+# Instalar Flask (y otras dependencias si es necesario)
+RUN pip3 install flask
+
+# Generar certificado SSL autofirmado
 RUN mkdir -p /etc/ssl/private && \
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout /etc/ssl/private/apache-selfsigned.key \
@@ -18,19 +25,15 @@ RUN mkdir -p /etc/ssl/private && \
     -subj "/C=CO/ST=VAC/L=Cali/O=HigueraGonzalez/CN=localhost" && \
     chmod 600 /etc/ssl/private/apache-selfsigned.key
 
-# Copy the web application files
+# Copiar archivos de la aplicación y configuración Apache
 COPY ./webapp /var/www/webapp
-
-# Set permissions for the webapp directory
-RUN chown -R www-data:www-data /var/www/webapp && \
-    chmod -R 755 /var/www/webapp
-
-# Copy Apache2 files
 COPY ./apache2 /etc/apache2/
 
-# Expose ports
+# Asignar permisos
+RUN chown -R www-data:www-data /var/www/webapp && chmod -R 755 /var/www/webapp
+
+# Exponer puertos
 EXPOSE 80 443
 
-CMD ["service", "apache2", "restart"]
-# Start Apache
+# Iniciar Apache en primer plano
 CMD ["apache2ctl", "-D", "FOREGROUND"]
