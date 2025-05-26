@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     libapache2-mod-wsgi-py3 \
     python3 \
     python3-pip \
+    python3-venv \  
     openssl
 
 # Habilitar módulos
