@@ -14,8 +14,11 @@ RUN apt-get update && apt-get install -y \
 # Habilitar módulos
 RUN a2enmod wsgi && a2enmod ssl
 
-# Instalar Flask (y otras dependencias si es necesario)
-RUN pip3 install flask
+# Crear entorno virtual
+RUN python3 -m venv /var/www/webapp/venv
+
+# Activar entorno virtual e instalar Flask
+RUN /var/www/webapp/venv/bin/pip install flask
 
 # Generar certificado SSL autofirmado
 RUN mkdir -p /etc/ssl/private && \
