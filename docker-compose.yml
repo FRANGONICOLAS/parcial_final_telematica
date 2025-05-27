@@ -1,8 +1,31 @@
-services:  
-  webapp:  
-    build:  
-      context: ./services/ 
+version: '3.8'
+
+services:
+  webapp:
+    build:
+      context: ./services/
       dockerfile: Dockerfile
-    ports: 
+    ports:
       - "9000:80"
       - "9001:443"
+    depends_on:
+      - db
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DB=myflaskapp
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: myflaskapp
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
