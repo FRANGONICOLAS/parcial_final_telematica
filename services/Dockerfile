@@ -15,9 +15,7 @@ RUN python3 -m venv /var/www/webapp/venv
 
 # Instalar Flask y Flask_SQLAlchemy dentro del entorno virtual
 RUN /var/www/webapp/venv/bin/pip install --upgrade pip
-RUN /var/www/webapp/venv/bin/pip install flask flask_sqlalchemy
-RUN /var/www/webapp/venv/bin/pip install pymysql
-
+RUN /var/www/webapp/venv/bin/pip install flask flask_sqlalchemy pymysql
 
 # Habilitar módulos de Apache
 RUN a2enmod wsgi ssl proxy proxy_http headers
@@ -33,6 +31,9 @@ RUN mkdir -p /etc/ssl/private && \
 # Copiar la aplicación y configuración de Apache
 COPY ./webapp /var/www/webapp
 COPY ./apache2 /etc/apache2/
+
+# Activar tu configuración de sitio Apache
+RUN a2ensite 192.168.60.3.conf
 
 # Cambiar propietario y permisos
 RUN chown -R www-data:www-data /var/www/webapp && chmod -R 755 /var/www/webapp
