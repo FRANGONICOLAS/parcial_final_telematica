@@ -1,5 +1,5 @@
 services:
-  backend:
+  webapp:
     build:
       context: ./webapp
       dockerfile: Dockerfile
@@ -14,9 +14,9 @@ services:
       - MYSQL_PASSWORD=root
       - MYSQL_DB=myflaskapp
     depends_on:
-      - database
+      - db
 
-  reverse_proxy:
+  nginx:
     build:
       context: ./nginx
       dockerfile: Dockerfile
@@ -25,7 +25,7 @@ services:
       - "80:80"
       - "443:443"
     depends_on:
-      - backend
+      - webapp
     volumes:
       - ./nginx/Certificados:/etc/nginx/Certificados:ro
 
