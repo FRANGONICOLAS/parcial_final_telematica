@@ -16,6 +16,8 @@ RUN python3 -m venv /var/www/webapp/venv
 # Instalar Flask y Flask_SQLAlchemy dentro del entorno virtual
 RUN /var/www/webapp/venv/bin/pip install --upgrade pip
 RUN /var/www/webapp/venv/bin/pip install flask flask_sqlalchemy
+RUN /var/www/webapp/venv/bin/pip install pymysql
+
 
 # Habilitar módulos de Apache
 RUN a2enmod wsgi ssl
