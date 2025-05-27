@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./app_backend
+      dockerfile: Dockerfile
+    container_name: flask_backend
+    restart: always
+    expose:
+      - "4000"
+    environment:
+      - FLASK_ENV=production
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DB=myflaskapp
+    depends_on:
+      - database
+
+  reverse_proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    container_name: secure_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    volumes:
+      - ./proxy/certs:/etc/nginx/certs:ro
+
+  database:
+    build:
+      context: ./mysql_data
+      dockerfile: Dockerfile
+    container_name: mysql_db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
