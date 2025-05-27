@@ -1,9 +1,9 @@
 services:
   backend:
     build:
-      context: ./app_backend
+      context: ./webapp
       dockerfile: Dockerfile
-    container_name: flask_backend
+    container_name: webapp
     restart: always
     expose:
       - "4000"
@@ -18,9 +18,9 @@ services:
 
   reverse_proxy:
     build:
-      context: ./proxy
+      context: ./nginx
       dockerfile: Dockerfile
-    container_name: secure_nginx
+    container_name: nginx
     ports:
       - "80:80"
       - "443:443"
@@ -31,9 +31,9 @@ services:
 
   database:
     build:
-      context: ./mysql_data
+      context: ./db
       dockerfile: Dockerfile
-    container_name: mysql_db
+    container_name: db
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=root
