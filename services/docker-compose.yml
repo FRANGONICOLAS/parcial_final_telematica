@@ -9,7 +9,7 @@ services:
       - "5000"
     environment:
       - FLASK_ENV=production
-      - MYSQL_HOST=mysql
+      - MYSQL_HOST=db
       - MYSQL_USER=root
       - MYSQL_PASSWORD=root
       - MYSQL_DB=myflaskapp
