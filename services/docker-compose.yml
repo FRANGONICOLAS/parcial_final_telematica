@@ -29,7 +29,7 @@ services:
     volumes:
       - ./nginx/Certificados:/etc/nginx/Certificados:ro
 
-  database:
+  db:
     build:
       context: ./db
       dockerfile: Dockerfile
