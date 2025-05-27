@@ -20,7 +20,7 @@ RUN /var/www/webapp/venv/bin/pip install pymysql
 
 
 # Habilitar módulos de Apache
-RUN a2enmod wsgi ssl
+RUN a2enmod wsgi ssl proxy proxy_http headers
 
 # Generar certificado SSL autofirmado
 RUN mkdir -p /etc/ssl/private && \
