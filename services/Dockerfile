@@ -33,8 +33,7 @@ COPY ./webapp /var/www/webapp
 COPY ./apache2 /etc/apache2/
 
 # Desactivar sitios por defecto y activar solo el tuyo
-RUN a2dissite 000-default.conf
-RUN a2ensite 192.168.60.3.conf
+RUN a2dissite 000-default.conf && a2ensite 192.168.60.3.conf
 
 # Ajustar permisos
 RUN chown -R www-data:www-data /var/www/webapp && chmod -R 755 /var/www/webapp
