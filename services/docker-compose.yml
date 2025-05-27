@@ -27,7 +27,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - ./proxy/certs:/etc/nginx/certs:ro
+      - ./nginx/Certificados:/etc/nginx/Certificados:ro
 
   database:
     build:
