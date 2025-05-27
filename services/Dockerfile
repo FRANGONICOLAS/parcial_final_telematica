@@ -1,9 +1,7 @@
 FROM ubuntu:latest
 
-# Evita interacción al instalar paquetes
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Instalar dependencias
 RUN apt-get update && apt-get install -y \
     apache2 \
     libapache2-mod-wsgi-py3 \
@@ -12,16 +10,15 @@ RUN apt-get update && apt-get install -y \
     python3-venv \
     openssl
 
-RUN pip install flask_sqlalchemy
-
-# Habilitar módulos
-RUN a2enmod wsgi && a2enmod ssl
-
 # Crear entorno virtual
 RUN python3 -m venv /var/www/webapp/venv
 
-# Activar entorno virtual e instalar Flask
-RUN /var/www/webapp/venv/bin/pip install flask
+# Instalar Flask y Flask_SQLAlchemy dentro del entorno virtual
+RUN /var/www/webapp/venv/bin/pip install --upgrade pip
+RUN /var/www/webapp/venv/bin/pip install flask flask_sqlalchemy
+
+# Habilitar módulos de Apache
+RUN a2enmod wsgi ssl
 
 # Generar certificado SSL autofirmado
 RUN mkdir -p /etc/ssl/private && \
@@ -31,15 +28,14 @@ RUN mkdir -p /etc/ssl/private && \
     -subj "/C=CO/ST=VAC/L=Cali/O=HigueraGonzalez/CN=localhost" && \
     chmod 600 /etc/ssl/private/apache-selfsigned.key
 
-# Copiar archivos de la aplicación y configuración Apache
+# Copiar la aplicación y configuración de Apache
 COPY ./webapp /var/www/webapp
 COPY ./apache2 /etc/apache2/
 
-# Asignar permisos
+# Cambiar propietario y permisos
 RUN chown -R www-data:www-data /var/www/webapp && chmod -R 755 /var/www/webapp
 
-# Exponer puertos
+# Exponer puertos HTTP y HTTPS
 EXPOSE 80 443
 
-# Iniciar Apache en primer plano
 CMD ["apache2ctl", "-D", "FOREGROUND"]
