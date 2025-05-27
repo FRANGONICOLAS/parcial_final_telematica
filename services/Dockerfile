@@ -8,14 +8,18 @@ RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     python3-venv \
-    openssl
+    openssl \
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    python3-dev
 
 # Crear entorno virtual
 RUN python3 -m venv /var/www/webapp/venv
 
-# Instalar dependencias en entorno virtual
+# Actualizar pip e instalar dependencias en entorno virtual (añadi cryptography)
 RUN /var/www/webapp/venv/bin/pip install --upgrade pip
-RUN /var/www/webapp/venv/bin/pip install flask flask_sqlalchemy pymysql
+RUN /var/www/webapp/venv/bin/pip install flask flask_sqlalchemy pymysql cryptography
 
 # Habilitar módulos necesarios
 RUN a2enmod wsgi ssl headers
